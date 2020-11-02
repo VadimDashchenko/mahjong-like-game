@@ -5,16 +5,16 @@ import * as gamesActions from '../../actions/games';
 import './styles.scss';
 
 class App extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            show: false,
-        }
-    }
 
     componentDidMount() {
         this.generate();
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const {first, second, resetChoice} = this.props;
+        if(first !== null && second !== null && (first.count !== second.count || first.count === second.count)){
+            setTimeout(() => resetChoice(), 1000);
+        }
     }
 
     // динамическая генерация простых чисел
@@ -28,8 +28,8 @@ class App extends Component {
                 }
             }
             if(notPrime === false){
-                primeNumbers.push(counter);
-                primeNumbers.push(counter);
+                primeNumbers.push({count: counter, state: 'show', chosen: false});
+                primeNumbers.push({count: counter, state: 'show', chosen: false});
             }
         }
         this.randomSortArray(primeNumbers);
@@ -54,7 +54,7 @@ class App extends Component {
 
     // ф-я рандомной сортировки массива
     randomSortArray = (arr) => {
-        const {generatePrimeNumbers} = this.props;
+        const {generatePrimeNumbers, numbers} = this.props;
         let compare = this.madness();
         arr.sort(compare);
         generatePrimeNumbers(arr);
@@ -62,24 +62,25 @@ class App extends Component {
 
     handleClick = (elem, i) => {
         const {getFirstNumber, getSecondNumber, first, second} = this.props;
-        if(first !== elem) {
-            getFirstNumber(elem);
-        } else {
-            getSecondNumber(elem)
+        if(first === null && first !== elem) {
+            getFirstNumber({count:elem.count, i});
+        } else if(second === null) {
+            getSecondNumber({count:elem.count, i})
         }
     }
 
     render(){
         const {numbers, first, second} = this.props;
-        const {show} = this.state;
         return (
-            <div className="app">
-                <Card
-                    first={first}
-                    second={second}
-                    show={show}
-                    changeNumber={this.handleClick}
-                    numbers={numbers} />
+            <div  className="app">
+                <h1>Mahjong-like game</h1>
+                <div className="app__content">
+                    <Card
+                        first={first}
+                        second={second}
+                        changeNumber={this.handleClick}
+                        numbers={numbers} />
+                </div>
             </div>
         )
     }
