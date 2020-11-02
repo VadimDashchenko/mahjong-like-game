@@ -1,0 +1,13 @@
+.app {
+  align-items: center;
+  padding: 40px;
+  text-align: center;
+  display: grid;
+  grid-template-columns: 32px 32px 32px 32px 32px 32px;
+  //grid-template-rows: 32px 32px 32px 32px;
+  gap: 16px 16px;
+  //grid-template-areas:
+  //  ". . . ."
+  //  ". . . ."
+  //  ". . . .";
+}
